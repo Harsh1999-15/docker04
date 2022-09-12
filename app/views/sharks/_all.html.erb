@@ -1,0 +1,14 @@
+<% for post in @shark.posts  %>
+    <ul>
+
+        <% if post.body.blank? %>
+            <div></div>
+            <% else %>
+                <li class="post">
+                    <%= post.body %>
+                    <%= button_to 'Destroy', post_path(:id => post.id), :method => :delete %>
+                </li>
+                <% end %>
+    </ul>
+
+<% end %>

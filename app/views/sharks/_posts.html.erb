@@ -1,0 +1,13 @@
+
+
+
+<div data-controller="posts">
+        <%= form_for([@shark, @shark.posts.build],data: { action: "posts#addBody"},remote:true) do |form| %>
+                <%= form.text_area :body, placeholder: "Your post here", data: { target: "posts.body" } %>
+                <br>
+                <%= form.submit %>
+        <% end %>
+  <ul data-target="posts.add">
+  </ul>
+
+</div>

@@ -1,0 +1,45 @@
+version: "3.0"
+services:
+  redis:
+    image: redis
+    command: redis-server
+    ports:
+      - 6379:6379
+    env_file:
+      - .env
+
+  db:
+    image: postgres:11
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      # - POSTGRES_PASSWORD=YS@123456
+      # - POSTGRES_USER=postgres
+      # - POSTGRES_DB=postgres12 
+      # POSTGRES_USER: postgres
+      # POSTGRES_NAM
+      # POSTGRES_PASSWORD: YS@123456
+      
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    links:
+      - redis
+    volumes:
+      - .:/opt/docker4
+
+  web:
+    image: ${DOCKER_IMAGE_NAME-docker4}
+    build:
+      context: .
+      args:
+        precompileassets: "not"
+    links:
+      - db
+      - sidekiq
+    ports:
+      - 3000:3000
+    command:  ["./scripts/wait-for-it.sh", "db:5432", "--", "./scripts/start_rails.sh"]
+    volumes:
+      - .:/opt/docker4:cached
